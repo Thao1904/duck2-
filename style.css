@@ -1,35 +1,105 @@
-:root{ --accent:#fff945; --glass:#0008; --border:#063; --borderGlow:#0a6 }
-*{ box-sizing:border-box }
-body{ margin:0; background:#17b88b; color:#fff; font-family:sans-serif; overflow:hidden }
-
-/* ===== Instructions ===== */
-.instructions{
-  position:fixed; left:50%; top:40px; transform:translateX(-50%);
-  z-index:40; background:var(--glass); backdrop-filter:blur(6px);
-  padding:12px 16px; border-radius:14px; max-width:880px;
-  font-size:14px; line-height:1.5; text-align:center
+:root{
+  --accent:#fff945;
+  --glass:#0008;
+  --border:#063;
+  --borderGlow:#0a6;
 }
-.instructions b{ color:var(--accent) }
-.row{ display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap; margin-top:6px }
-.value-pill{ padding:2px 8px; border-radius:999px; background:#ffffff24; font-variant-numeric:tabular-nums }
-input[type="range"]{ width:220px }
+
+*{ box-sizing:border-box }
+body{
+  margin:0;
+  background:#17b88b;
+  color:#fff;
+  font-family:sans-serif;
+  overflow:hidden;
+}
+
+/* ===== Top UI: instruction + banner (center, top) ===== */
+.top-ui{
+  position: fixed;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(1600px, 92vw);
+  pointer-events: none; /* tránh chặn tương tác dưới */
+}
+
+/* Instruction lớn, căn giữa */
+.instruction-bar{
+  color: #fff945;
+  font-weight: 900;
+  font-size: clamp(22px, 3.3vw, 40px);
+  text-align: center;
+  text-shadow: 0 2px 10px #0008;
+}
+
+/* Banner vàng chữ trắng, nằm ngay dưới instruction */
+.nohand-banner{
+  background: #fff945;      /* nền vàng */
+  color: #000000;              /* chữ trắng như yêu cầu */
+  font-weight: 900;
+  border-radius: 12px;
+  border: 3px solid #ffeb3b;
+  box-shadow: 0 6px 18px #0007, 0 0 12px #fff945aa;
+  padding: 10px 14px;
+  letter-spacing: .2px;
+  font-size: clamp(14px, 1.6vw, 20px);
+  display: none;            /* chỉ bật khi không detect */
+}
+
+/* ===== Center Message (restart, notices) ===== */
+.center-msg{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff945;
+  font-weight: 900;
+  font-size: clamp(36px, 4vw, 48px);
+  text-align: center;
+  text-shadow: 0 2px 10px #0008;
+  z-index: 2000;
+  display: none;
+}
 
 /* ===== Boundary ===== */
 .playfield{
-  position:fixed; inset:40px;
-  border:6px solid var(--border);
-  box-shadow:0 0 0 2px #000 inset, 0 0 20px var(--borderGlow) inset, 0 0 30px #0008;
-  border-radius:20px; z-index:1;
-}
-.playfield::after{
-  content:"Boundary"; position:absolute; left:50%; top:0; transform:translate(-50%,-100%);
-  font-size:12px; color:#013; background:#fff945; padding:2px 8px; border-radius:999px;
+  position: fixed;
+  top: 100px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  border: 6px solid var(--accent);     /* 👉 viền vàng */
+  box-shadow: 0 0 0 2px #000 inset, 0 0 20px var(--borderGlow) inset, 0 0 30px #0008;
+  border-radius: 20px;
+  z-index: 1;
 }
 
-/* ===== Debug ===== */
-.debug_window{ position:fixed; bottom:12px; left:12px; z-index:30 }
+/* ===== Debug / Camera ===== */
+.debug_window{
+  position:fixed;
+  bottom:12px;
+  left:12px;
+  z-index:30;
+}
+
+/* Always show canvas; video hidden */
 .input_video{ display:none }
-.output_canvas{ display:none; width:420px; height:auto; border-radius:12px; box-shadow:0 8px 30px #0006 }
+.output_canvas{
+  display:block;              /* luôn hiển thị */
+  width:500px;                /* 👉 tăng cỡ theo yêu cầu */
+  height:auto;
+  border-radius:24px;
+  background:#0004;           /* nền mờ */
+  box-shadow:0 0 40px #fff945aa;  /* quầng vàng nhẹ */
+  border:4px solid #fff945;        /* 👉 viền vàng */
+}
+
 
 /* ===== Cursor: gold ring ===== */
 .cursor.wand{
@@ -45,18 +115,19 @@ input[type="range"]{ width:220px }
   box-shadow:0 0 8px 4px rgba(246,210,62,.8), inset 0 0 4px rgba(246,210,62,.8);
 }
 
-/* ===== Ducks (mother + baby base) ===== */
+/* ===== Ducks ===== */
 .duck *, .duckling *{
   background-size: calc(var(--w)*var(--m)) calc(var(--h)*var(--m)) !important;
-  background-repeat:no-repeat !important; image-rendering:pixelated
+  background-repeat:no-repeat !important;
+  image-rendering:pixelated;
 }
 .duck, .duckling{
   position:absolute; transition:1s;
   --w:20; --h:14; --m:2.6px; --neck-w:16;
   width:calc(var(--w)*var(--m)); height:calc(var(--h)*var(--m));
-  --dark-yellow:#fcc85b
+  --dark-yellow:#fcc85b;
 }
-.duckling{ --m:1.3px } /* baby smaller */
+.duckling{ --m:1.3px }
 
 /* Mother sprites (white) */
 .body{
@@ -94,7 +165,7 @@ input[type="range"]{ width:220px }
 @keyframes waddle{ 0%,100%{height:var(--one)} 50%{height:var(--two)} }
 .left .legs,.right .legs{ width:calc(10*var(--m)); left:calc(5*var(--m)) }
 
-/* ===== Yellow duckling sprites (fixed) ===== */
+/* ===== Yellow duckling sprites (unchanged) ===== */
 .duckling .head{
   background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAAAXNSR0IArs4c6QAAAGFJREFUOE9jZKAyYKSyeQw4Dfz/wfc/PssYBTZj1YshSMggdEvQDUYxkFTDYIYjGwo3kFzD0A0dNZD8VAmLGNqFIcht5MY01mQD8yyphuJN2MghSMhgorMe+dEC0Un10gYAfowwEW4KJvUAAAAASUVORK5CYII=);
   margin-left: calc(((var(--w)) - var(--neck-w)) * -0.5px);
@@ -128,7 +199,7 @@ input[type="range"]{ width:220px }
 .duckling .leg:after{ height:3px; width:2px; left:0; bottom:0 }
 .duckling.waddle .leg{ animation:waddle .2s infinite }
 
-/* ===== Text effects ===== */
+/* ===== Text FX ===== */
 .fx-quack{
   position:fixed; pointer-events:none; color:#f6d23e; font-weight:800;
   text-shadow:0 2px 10px #0008; transform:translate(-50%,-50%); z-index:1200;
@@ -140,46 +211,19 @@ input[type="range"]{ width:220px }
   100%{ opacity:0; transform:translate(-50%,-120%) scale(1.05) }
 }
 .fx-plus{
-  position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
-  background:#fff945; color:#013; padding:10px 14px; border-radius:999px;
-  font-weight:700; z-index:1200; box-shadow:0 6px 22px #0007; animation: plus-fade 900ms ease-out forwards;
+  position: fixed;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff945; color: #013;
+  padding: 18px 28px; border-radius: 999px;
+  font-weight: 800; font-size: clamp(20px, 3vw, 30px);
+  letter-spacing: 0.5px;
+  border: 4px solid #ffeb3b;
+  box-shadow: 0 8px 28px #0007, 0 0 20px #fff945aa;
+  z-index: 1200; animation: plus-fade 900ms ease-out forwards;
 }
 @keyframes plus-fade{
   0%{ opacity:0; transform:translate(-50%,-52%) scale(.9) }
   20%{ opacity:1; transform:translate(-50%,-50%) scale(1) }
   100%{ opacity:0; transform:translate(-50%,-60%) scale(1.05) }
 }
-
-/* ===== For screens 768px and below ===== */
-@media (max-width: 768px) {
-  /* Wrap the canvas in a 16:9 box that will scale responsively */
-  .debug-wrap {
-    width: 100%;
-    max-width: 800px;            /* optional */
-    object-fit: cover;
-    position: relative;
-  }
-  .output_canvas {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-}
-
-/* ===== For screens above 768px ===== */
-@media (min-width: 769px) {
-  /* Wrap the canvas in a 16:9 box that will scale responsively */
-  .debug-wrap {
-    width: 100%;
-    max-width: 800px;            /* optional */
-    aspect-ratio: 16 / 9;        /* match camera 1280x720 */
-    position: relative;
-  }
-  .output_canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-}
-
