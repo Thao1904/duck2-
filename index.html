@@ -3,35 +3,37 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Hand Ducks · yellow ducklings</title>
+  <title>*quack quack* · yellow ducklings</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Instructions -->
-  <div class="instructions">
-    <div>
-      <p>
-        Move your <b>hand</b> in front of the webcam.<br>
-        The <b>duck mom</b> follows your finger inside the boundary.<br>
-        Pinch and release to <b>quack</b> —<br>
-        <b>quack</b> 3 times to call a <b>baby duck</b>.
-      </p>
-    </div>
-    <div class="row">
-      <label><input type="checkbox" id="hand_choice"> Use <b>left hand</b></label>
-      <span>mom speed</span>
-      <input id="speed_range" type="range" min="0.5" max="3" step="0.1" value="1">
-      <span class="value-pill"><span id="speed_value">1.0</span>×</span>
-    </div>
+
+
+  <!-- Top UI (fixed, center) -->
+<div class="top-ui">
+  <div class="instruction-bar" id="instruction-bar">
+    Pinch and release to <b>quack</b> - 3 quacks spawn <b>a baby duck</b>.
   </div>
+
+  <!-- Banner dưới instruction, ẩn/hiện theo detect -->
+  <div class="nohand-banner" id="nohand-banner">
+    Move your hand in front of the camera
+  </div>
+</div>
+
 
   <!-- Boundary -->
   <div class="playfield" id="playfield"></div>
 
-  <!-- Debug -->
+  <!-- Debug / Camera -->
   <div class="debug_window">
     <video class="input_video" playsinline></video>
     <canvas class="output_canvas" width="1280" height="720"></canvas>
+
+    <!-- No-hand banner (inside camera frame) -->
+    <div class="nohand-banner" id="nohand-banner">
+      Move your hand in front of the camera
+    </div>
   </div>
 
   <!-- Mother duck -->
@@ -44,6 +46,9 @@
 
   <!-- Hand cursor -->
   <div class="cursor wand" id="hand-cursor"></div>
+
+  <!-- Center system message (restarts, etc.) -->
+  <div class="center-msg" id="center-msg"></div>
 
   <!-- Mediapipe libs -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
